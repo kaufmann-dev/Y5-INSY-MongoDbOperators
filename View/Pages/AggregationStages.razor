@@ -1,0 +1,65 @@
+﻿@page "/aggregationstages"
+@using Domain.Repositories.Implementations
+@inject IAggregationStageRepository _repository
+
+<div class="container">
+    <h1 class="display-4 mb-4">Aggregation Stages</h1>
+    @if (_aggregationStages != null)
+    {
+        @if (_aggregationStages.Count == 0)
+        {
+            <span>There are no registered aggregation stages.</span>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Short description</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var aggregationStage in _aggregationStages)
+                {
+                    <tr>
+                        <td><a href="/aggregationstages/@aggregationStage.Id">@aggregationStage.Name</a></td>
+                        
+                        @if (aggregationStage.ShortDescription != null)
+                        {
+                            <td>@aggregationStage.ShortDescription</td>   
+                        }
+                        else
+                        {
+                            <td>-</td>
+                        }
+                        <td><button @onclick="()=>DeleteAggregationStage(aggregationStage.Id)" class="btn btn-danger">Delete</button></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        <a href="/addaggregationstage"><button class="btn btn-primary d-block mt-3">Add Aggregation Stage</button></a>
+    }
+    else
+    {
+        <span>Loading...</span>
+    }
+</div>
+
+@code {
+    private List<Model.Entities.AggregationStage> _aggregationStages;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        _aggregationStages = await _repository.ReadAllAsync();
+    }
+
+    public async Task DeleteAggregationStage(int id)
+    {
+        var deleteCandidate = await _repository.ReadAsync(id);
+        await _repository.DeleteAsync(deleteCandidate);
+        _aggregationStages.Remove(deleteCandidate);
+    }
+}

@@ -1,0 +1,60 @@
+﻿@page "/aggregationoperators/{Id:int}"
+@using Domain.Repositories.Implementations
+@inject IAggregationOperatorRepository _repository;
+@inject NavigationManager _navigationmanager;
+
+<div class="container">
+    @if (_aggregationOperator != null)
+    {
+        <h1 class="display-4 mb-4">@_aggregationOperator.Name</h1>
+
+        <h6 class="text-primary">Type</h6>
+        <p>@_aggregationOperator.Type</p>
+                                        
+        <h6 class="text-primary">Syntax</h6>
+        <pre>@_aggregationOperator.Syntax</pre>
+                                          
+         @if (_aggregationOperator.ShortDescription != null)
+         {
+             <h6 class="text-primary">Short description</h6>
+             <p>@_aggregationOperator.ShortDescription</p>   
+         }
+                                          
+        <h6 class="text-primary">Description</h6>
+        <p>@_aggregationOperator.Description</p>
+        
+        @if (_aggregationOperator.CodeExamples.Count > 0)
+        {
+            <h6 class="text-primary">Code Examples</h6>
+            @foreach (var codeExample in _aggregationOperator.CodeExamples)
+            {
+                <pre>@codeExample.CodeExample.Code</pre>
+            }
+        }
+                                            
+        <a href="/aggregationoperators"><button class="btn btn-primary">All</button></a>
+        <button @onclick="DeleteAggregationOperator" class="btn btn-danger">Delete</button>
+    }
+    else
+    {
+        <span>Loading...</span>
+    }
+</div>
+
+@code {
+    private Model.Entities.AggregationOperator _aggregationOperator { get; set; }
+    
+    [Parameter]
+    public int Id { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        _aggregationOperator = await _repository.ReadAsync(Id);
+    }
+    
+    public async Task DeleteAggregationOperator()
+    {
+        await _repository.DeleteAsync(_aggregationOperator);
+        _navigationmanager.NavigateTo("/aggregationoperators");
+    }
+}

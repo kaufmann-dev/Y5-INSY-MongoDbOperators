@@ -1,0 +1,33 @@
+﻿@page "/addcodeexample"
+@using Domain.Repositories.Implementations
+@inject ICodeExampleRepository _repository
+@inject NavigationManager _navigationManager
+
+<div class="container">
+    <h1 class="display-4 mb-4">Add Code Example</h1>
+    <EditForm Model="_CodeExample" OnValidSubmit="CreateCodeExample" class="form">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea @bind="_CodeExample.Description" class="form-control"></textarea>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _CodeExample.Description"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Code</label>
+            <textarea @bind="_CodeExample.Code" class="form-control"></textarea>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _CodeExample.Code"/>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <NavLink href="/codeexamples" class="btn btn-secondary">Cancel</NavLink>
+    </EditForm>
+</div>
+
+@code {
+    public Model.Entities.CodeExample _CodeExample { get; set; } = new Model.Entities.CodeExample();
+
+    public async Task CreateCodeExample()
+    {
+        await _repository.CreateAsync(_CodeExample);
+        _navigationManager.NavigateTo("/codeexamples");
+    }
+}

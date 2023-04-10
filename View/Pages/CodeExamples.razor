@@ -1,0 +1,47 @@
+﻿@page "/codeexamples"
+@using Domain.Repositories.Implementations
+@inject ICodeExampleRepository _repository
+
+<div class="container">
+    <h1 class="display-4 mb-4">Code Examples</h1>
+    @if (_codeExamples != null)
+        {
+            @if (_codeExamples.Count == 0)
+            {
+                <span>There are no registered code examples.</span>
+            }
+            else
+            {
+                @foreach (var codeExample in _codeExamples)
+                {
+                    @if (codeExample.Description != null)
+                    {
+                        <p class="mb-2">@codeExample.Description</p>   
+                    }
+                    <pre class="mb-2 border-start">@codeExample.Code</pre>
+                    <button @onclick="()=>DeleteCodeExample(codeExample.Id)" class="btn btn-sm mb-4 btn-danger">Delete</button>
+                }
+            }
+            <a href="/addcodeexample"><button class="btn btn-primary d-block">Add Code Examples</button></a>
+        }
+        else
+        {
+            <span>Loading...</span>
+        }
+</div>
+
+@code {
+    private List<Model.Entities.CodeExample> _codeExamples;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        _codeExamples = await _repository.ReadAllAsync();
+    }
+
+    public async Task DeleteCodeExample(int id)
+    {
+        var deleteCandidate = await _repository.ReadAsync(id);
+        await _repository.DeleteAsync(deleteCandidate);
+        _codeExamples.Remove(deleteCandidate);
+    }
+}

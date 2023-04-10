@@ -1,0 +1,60 @@
+﻿@page "/aggregationstages/{Id:int}"
+@using Domain.Repositories.Implementations
+@inject IAggregationStageRepository _repository;
+@inject NavigationManager _navigationmanager;
+
+<div class="container">
+    @if (_aggregationStage != null)
+    {
+        <h1 class="display-4 mb-4">@_aggregationStage.Name</h1>
+                                                                  
+        <h6 class="text-primary">Name</h6>
+        <p>@_aggregationStage.Name</p>
+                                        
+        <h6 class="text-primary">Syntax</h6>
+        <pre>@_aggregationStage.Syntax</pre>
+                                          
+         @if (_aggregationStage.ShortDescription != null)
+         {
+             <h6 class="text-primary">Short description</h6>
+             <p>@_aggregationStage.ShortDescription</p>   
+         }
+                                          
+        <h6 class="text-primary">Description</h6>
+        <p>@_aggregationStage.Description</p>
+        
+        @if (_aggregationStage.CodeExamples.Count > 0)
+        {
+            <h6 class="text-primary">Code Examples</h6>
+            @foreach (var codeExample in _aggregationStage.CodeExamples)
+            {
+                <pre>@codeExample.CodeExample.Code</pre>
+            }
+        }
+                                            
+        <a href="/aggregationstages"><button class="btn btn-primary">All</button></a>
+        <button @onclick="DeleteAggregationStage" class="btn btn-danger">Delete</button>
+    }
+    else
+    {
+        <span>Loading...</span>
+    }
+</div>
+
+@code {
+    private Model.Entities.AggregationStage _aggregationStage { get; set; }
+    
+    [Parameter]
+    public int Id { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        _aggregationStage = await _repository.ReadAsync(Id);
+    }
+    
+    public async Task DeleteAggregationStage()
+    {
+        await _repository.DeleteAsync(_aggregationStage);
+        _navigationmanager.NavigateTo("/aggregationstages");
+    }
+}
