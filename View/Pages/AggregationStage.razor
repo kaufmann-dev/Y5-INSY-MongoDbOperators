@@ -4,7 +4,7 @@
 @inject NavigationManager _navigationmanager;
 
 <div class="container">
-    @if (_aggregationStage != null)
+    @if (_aggregationStage is not null)
     {
         <h1 class="display-4 mb-4">@_aggregationStage.Name</h1>
                                                                   
@@ -14,7 +14,7 @@
         <h6 class="text-primary">Syntax</h6>
         <pre>@_aggregationStage.Syntax</pre>
                                           
-         @if (_aggregationStage.ShortDescription != null)
+         @if (_aggregationStage.ShortDescription is not null)
          {
              <h6 class="text-primary">Short description</h6>
              <p>@_aggregationStage.ShortDescription</p>   
@@ -28,8 +28,14 @@
             <h6 class="text-primary">Code Examples</h6>
             @foreach (var codeExample in _aggregationStage.CodeExamples)
             {
-                <pre>@codeExample.CodeExample.Code</pre>
+                @if (codeExample.CodeExample.Description is not null)
+                {
+                    <p style="white-space: pre-wrap; font-family: monospace;" class="mb-2">@codeExample.CodeExample.Description</p>   
+                }
+                <pre class="mb-4 bg-light border p-2 rounded overflow-auto">@codeExample.CodeExample.Code</pre>
+                <hr>
             }
+            
         }
                                             
         <a href="/aggregationstages"><button class="btn btn-primary">All</button></a>
