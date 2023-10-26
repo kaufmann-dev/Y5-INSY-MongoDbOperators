@@ -1,0 +1,43 @@
+﻿@page "/addaggregationstage"
+@using Domain.Repositories.Implementations
+@inject IAggregationStageRepository _repository
+@inject NavigationManager _navigationManager
+
+<div class="container">
+    <h1 class="display-4 mb-4">Add Aggregation Stage</h1>
+    <EditForm Model="_stage" OnValidSubmit="CreateAggregationStage" class="form">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <InputText @bind-Value="_stage.Name" class="form-control"></InputText>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _stage.Name"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Syntax</label>
+            <textarea @bind="_stage.Syntax" class="form-control"></textarea>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _stage.Syntax"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Short Description</label>
+            <InputText @bind-Value="_stage.ShortDescription" class="form-control"></InputText>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _stage.ShortDescription"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea @bind="_stage.Description" class="form-control"></textarea>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _stage.Description"/>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <NavLink href="/aggregationstages" class="btn btn-secondary">Cancel</NavLink>
+    </EditForm>
+</div>
+
+@code {
+    public Model.Entities.AggregationStage _stage { get; set; } = new Model.Entities.AggregationStage();
+
+    public async Task CreateAggregationStage()
+    {
+        await _repository.CreateAsync(_stage);
+        _navigationManager.NavigateTo("/aggregationstages");
+    }
+}

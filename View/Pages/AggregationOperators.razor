@@ -1,0 +1,67 @@
+﻿@page "/aggregationoperators"
+@using Domain.Repositories.Implementations
+@using Model.Entities
+@inject IAggregationOperatorRepository _repository
+
+<div class="container">
+    <h1 class="display-4 mb-4">Aggregation Operators</h1>
+    @if (_aggregationOperators != null)
+    {
+        @if (_aggregationOperators.Count == 0)
+        {
+            <span>There are no registered aggregation operators.</span>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Short description</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var aggregationOperator in _aggregationOperators)
+                {
+                    <tr>
+                        <td><a href="/aggregationoperators/@aggregationOperator.Id">@aggregationOperator.Name</a></td>
+                        <td>@aggregationOperator.Type</td>
+                        @if (aggregationOperator.ShortDescription != null)
+                        {
+                            <td>@aggregationOperator.ShortDescription</td>   
+                        }
+                        else
+                        {
+                            <td>-</td>
+                        }
+                        <td><button @onclick="()=>DeleteAggregationOperator(aggregationOperator.Id)" class="btn btn-danger">Delete</button></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        <a href="/addaggregationoperator"><button class="btn btn-primary d-block mt-3">Add Aggregation Operator</button></a>
+    }
+    else
+    {
+        <span>Loading...</span>
+    }
+</div>
+
+@code {
+    private List<Model.Entities.AggregationOperator> _aggregationOperators;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        _aggregationOperators = await _repository.ReadAllAsync();
+    }
+
+    public async Task DeleteAggregationOperator(int id)
+    {
+        var deleteCandidate = await _repository.ReadAsync(id);
+        await _repository.DeleteAsync(deleteCandidate);
+        _aggregationOperators.Remove(deleteCandidate);
+    }
+}

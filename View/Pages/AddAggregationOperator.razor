@@ -1,0 +1,53 @@
+﻿@page "/addaggregationoperator"
+@using Domain.Repositories.Implementations
+@using Model.Entities
+@inject IAggregationOperatorRepository _repository
+@inject NavigationManager _navigationManager
+
+<div class="container">
+    <h1 class="display-4 mb-4">Add Aggregation Operator</h1>
+    <EditForm Model="_operator" OnValidSubmit="CreateAggregationOperator" class="form">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <InputText @bind-Value="_operator.Name" class="form-control"></InputText>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _operator.Name"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Syntax</label>
+            <textarea @bind="_operator.Syntax" class="form-control"></textarea>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _operator.Syntax"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Short Description</label>
+            <InputText @bind-Value="_operator.ShortDescription" class="form-control"></InputText>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _operator.ShortDescription"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea @bind="_operator.Description" class="form-control"></textarea>
+            <ValidationMessage style="margin-top: 4pt;" For="() => _operator.Description"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Type</label>
+            <InputSelect @bind-Value="_operator.Type" class="form-control">
+                @foreach (var type in Enum.GetValues<EAggregationOperatorType>())
+                {
+                    <option value="@type">@type</option>
+                }
+            </InputSelect>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <NavLink href="/aggregationoperators" class="btn btn-secondary">Cancel</NavLink>
+    </EditForm>
+</div>
+
+@code {
+    public Model.Entities.AggregationOperator _operator { get; set; } = new Model.Entities.AggregationOperator();
+
+    public async Task CreateAggregationOperator()
+    {
+        await _repository.CreateAsync(_operator);
+        _navigationManager.NavigateTo("/aggregationoperators");
+    }
+}
