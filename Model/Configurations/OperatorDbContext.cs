@@ -20,6 +20,10 @@ public class OperatorDbContext : DbContext
             .HasIndex(x => x.Name)
             .IsUnique();
 
+        builder.Entity<AggregationOperator>()
+            .Property(c => c.Type)
+            .HasConversion<string>();
+
         builder.Entity<OperatorCodeExamples>()
             .HasKey(x => new
             {
