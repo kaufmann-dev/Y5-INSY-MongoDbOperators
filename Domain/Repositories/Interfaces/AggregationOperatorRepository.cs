@@ -16,6 +16,7 @@ public class AggregationOperatorRepository : ARepository<AggregationOperator>, I
     {
         return await _table
             .Include(c => c.CodeExamples)
+            .ThenInclude(c=>c.CodeExample)
             .Where(c => c.Id == id)
             .SingleOrDefaultAsync();
     }

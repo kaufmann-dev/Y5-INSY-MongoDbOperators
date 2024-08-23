@@ -28,8 +28,14 @@
             <h6 class="text-primary">Code Examples</h6>
             @foreach (var codeExample in _aggregationOperator.CodeExamples)
             {
-                <pre>@codeExample.CodeExample.Code</pre>
+                @if (codeExample.CodeExample.Description is not null)
+                {
+                    <p style="white-space: pre-wrap; font-family: monospace;" class="mb-2">@codeExample.CodeExample.Description</p>   
+                }
+                <pre class="mb-4 bg-light border p-2 rounded overflow-auto">@codeExample.CodeExample.Code</pre>
+                <hr>
             }
+            
         }
                                             
         <a href="/aggregationoperators"><button class="btn btn-primary">All</button></a>

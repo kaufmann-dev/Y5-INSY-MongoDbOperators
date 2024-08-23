@@ -16,9 +16,9 @@
                 {
                     @if (codeExample.Description != null)
                     {
-                        <p class="mb-2">@codeExample.Description</p>   
+                        <p style="white-space: pre-wrap; font-family: monospace;" class="mb-2">@codeExample.Description</p>   
                     }
-                    <pre class="mb-2 border-start">@codeExample.Code</pre>
+                    <pre class="mb-2 bg-light border p-2 rounded overflow-auto">@codeExample.Code</pre>
                     <button @onclick="()=>DeleteCodeExample(codeExample.Id)" class="btn btn-sm mb-4 btn-danger">Delete</button>
                 }
             }
